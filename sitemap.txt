@@ -1,8 +1,8 @@
-http://example.com/2026/04/08/ritsec2026-%E7%B0%A1%E5%96%AEwriteup/
-http://example.com/about/index.html
-http://example.com/tags/index.html
-http://example.com/categories/index.html
-http://example.com/
-http://example.com/tags/ctf/
-http://example.com/tags/rev/
-http://example.com/categories/writeup/
+https://bios021.github.io/2026/04/08/ritsec2026-%E7%B0%A1%E5%96%AEwriteup/
+https://bios021.github.io/about/index.html
+https://bios021.github.io/tags/index.html
+https://bios021.github.io/categories/index.html
+https://bios021.github.io/
+https://bios021.github.io/tags/ctf/
+https://bios021.github.io/tags/rev/
+https://bios021.github.io/categories/writeup/
