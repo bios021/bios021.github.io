@@ -1,0 +1,8 @@
+http://example.com/2026/04/08/ritsec2026-%E7%B0%A1%E5%96%AEwriteup/
+http://example.com/about/index.html
+http://example.com/tags/index.html
+http://example.com/categories/index.html
+http://example.com/
+http://example.com/tags/ctf/
+http://example.com/tags/rev/
+http://example.com/categories/writeup/
