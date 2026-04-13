@@ -6,9 +6,9 @@ https://bios021.github.io/categories/index.html
 https://bios021.github.io/
 https://bios021.github.io/tags/ctf/
 https://bios021.github.io/tags/rev/
-https://bios021.github.io/tags/cryto/
 https://bios021.github.io/tags/pwn/
 https://bios021.github.io/tags/misc/
 https://bios021.github.io/tags/web/
 https://bios021.github.io/tags/forensics/
+https://bios021.github.io/tags/crypto/
 https://bios021.github.io/categories/writeup/
