@@ -1,3 +1,4 @@
+https://bios021.github.io/2026/04/13/UMASS2026-writeup/
 https://bios021.github.io/2026/04/08/ritsec2026-%E7%B0%A1%E5%96%AEwriteup/
 https://bios021.github.io/about/index.html
 https://bios021.github.io/tags/index.html
@@ -5,4 +6,9 @@ https://bios021.github.io/categories/index.html
 https://bios021.github.io/
 https://bios021.github.io/tags/ctf/
 https://bios021.github.io/tags/rev/
+https://bios021.github.io/tags/cryto/
+https://bios021.github.io/tags/pwn/
+https://bios021.github.io/tags/misc/
+https://bios021.github.io/tags/web/
+https://bios021.github.io/tags/forensics/
 https://bios021.github.io/categories/writeup/

